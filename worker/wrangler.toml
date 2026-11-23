@@ -1,0 +1,14 @@
+# Unggah OAuth relay - Cloudflare Worker (free tier fits: 100k requests/day).
+# Deploy steps: see README.md in this directory. No secrets live in this file;
+# the client secret is set once with `npx wrangler secret put UNGGAH_GITHUB_CLIENT_SECRET`.
+
+name = "unggah-relay"
+main = "src/worker.js"
+compatibility_date = "2026-11-23"
+
+[vars]
+UNGGAH_GITHUB_CLIENT_ID = "Iv23liyHXcr16ew3LsB8"
+UNGGAH_ALLOWED_ORIGINS = "https://vanipy.com"
+UNGGAH_ALLOWED_REDIRECT_URIS = "https://vanipy.com/unggah/"
+UNGGAH_RATE_PER_MIN = "10"
+UNGGAH_GLOBAL_RATE_PER_MIN = "60"

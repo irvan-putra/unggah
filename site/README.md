@@ -20,7 +20,7 @@ The page never asks for a password or a personal access token. Each user install
 
 ## Why a relay at all
 
-GitHub's token-exchange endpoint requires the app's client secret and sends no CORS headers, so a static page cannot complete the exchange. The relay is the smallest possible fix: one stateless route (`POST /oauth/token`), strict origin/redirect allowlists, per-IP rate limits, no storage, no credential logging. See `server/README.md`.
+GitHub's token-exchange endpoint requires the app's client secret and sends no CORS headers, so a static page cannot complete the exchange. The relay is the smallest possible fix: one stateless route (`POST /oauth/token`), strict origin/redirect allowlists, per-IP rate limits, no storage, no credential logging. Two interchangeable implementations: `server/` (Python, for NEO App) and `worker/` (Cloudflare Workers); see their READMEs.
 
 ## One-time owner setup
 
