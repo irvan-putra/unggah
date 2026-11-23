@@ -1,5 +1,5 @@
-FROM python:3.12-alpine
-RUN adduser -D -u 10001 relay
+FROM python:3.12-slim
+RUN useradd -u 10001 -m relay
 USER relay
 WORKDIR /srv
 COPY app/ ./app/
