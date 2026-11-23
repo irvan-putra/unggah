@@ -98,10 +98,10 @@ def parse_version(argv, fallback=None):
 
 
 def write_densities(img, res_dir, name="ic_launcher.png"):
-    for dens, px in DENSITIES.items():
-        out = os.path.join(res_dir, "mipmap-" + dens)
-        os.makedirs(out, exist_ok=True)
-        img.resize((px, px), Image.LANCZOS).save(os.path.join(out, name), optimize=True)
+    """Write the single 192px family drawable, without density variants."""
+    out = os.path.join(res_dir, "drawable")
+    os.makedirs(out, exist_ok=True)
+    img.resize((192, 192), Image.LANCZOS).save(os.path.join(out, name), optimize=True)
 
 def unggah(version):
     """A rocket launching out of an open parcel: the app pushes ZIP contents up to GitHub.
@@ -140,7 +140,7 @@ def main():
     version = parse_version(sys.argv, re.search(r'versionName = "([^"]+)"', gradle).group(1))
     img = unggah(version)
     out = os.path.join(root, "app/src/main/res/drawable/ic_launcher.png")
-    img.resize((512, 512), Image.LANCZOS).save(out, optimize=True)
+    img.resize((192, 192), Image.LANCZOS).save(out, optimize=True)
     print("wrote icon for", version)
 
 
