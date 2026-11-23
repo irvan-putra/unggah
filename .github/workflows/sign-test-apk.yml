@@ -1,7 +1,7 @@
 name: sign test apk
 # Manual only. Tests, builds the debug variant and re-signs it with the dedicated unggah key. Uploads a workflow artifact only.
 # This repo has no unit tests; the gate job requires its CI run (build + identity check) to have passed on the same commit.
-# DRAFT, NOT ACTIVE until the unggah signing key exists, its four secrets are set, and the three values marked SET below are filled in.
+# Active: dedicated signing key and certificate pin verified; four UNGGAH_SIGNING_* secrets are configured.
 # It never creates a release, tag or commit. A reviewed person attaches the APK to a release by hand.
 on:
   workflow_dispatch:
@@ -60,10 +60,10 @@ jobs:
         run: /tmp/gradle-8.6/bin/gradle --no-daemon assembleDebug
       - name: Align, sign and verify
         env:
-          KS_B64: ${{ secrets.FAE_SIGNING_KEYSTORE_BASE64 }}
-          KS_STORE_PW: ${{ secrets.FAE_SIGNING_STORE_PASSWORD }}
-          KS_KEY_PW: ${{ secrets.FAE_SIGNING_KEY_PASSWORD }}
-          KS_ALIAS: ${{ secrets.FAE_SIGNING_KEY_ALIAS }}
+          KS_B64: ${{ secrets.UNGGAH_SIGNING_KEYSTORE_BASE64 }}
+          KS_STORE_PW: ${{ secrets.UNGGAH_SIGNING_STORE_PASSWORD }}
+          KS_KEY_PW: ${{ secrets.UNGGAH_SIGNING_KEY_PASSWORD }}
+          KS_ALIAS: ${{ secrets.UNGGAH_SIGNING_KEY_ALIAS }}
         run: |
           set -euo pipefail
           [[ "$EXPECTED_CERT_SHA256" =~ ^[0-9A-F]{64}$ ]] || { echo "EXPECTED_CERT_SHA256 not filled in; refusing to sign"; exit 1; }

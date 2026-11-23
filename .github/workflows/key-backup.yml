@@ -13,13 +13,13 @@ jobs:
     steps:
       - name: encrypt and commit keystore backup to cadang
         env:
-          KS_B64: ${{ secrets.FAE_SIGNING_KEYSTORE_BASE64 }}
-          STORE_PASS: ${{ secrets.FAE_SIGNING_STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.FAE_SIGNING_KEY_ALIAS }}
-          KEY_PASS: ${{ secrets.FAE_SIGNING_KEY_PASSWORD }}
+          KS_B64: ${{ secrets.UNGGAH_SIGNING_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.UNGGAH_SIGNING_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.UNGGAH_SIGNING_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.UNGGAH_SIGNING_KEY_PASSWORD }}
           RECOVERY: ${{ secrets.BACKUP_RECOVERY_PASSWORD }}
           CADANG_TOKEN: ${{ secrets.CADANG_WRITE_TOKEN }}
-          APP: fae
+          APP: unggah
         run: |
           set -euo pipefail
           test -n "$KS_B64"; test -n "$RECOVERY"; test -n "$STORE_PASS"; test -n "$CADANG_TOKEN"
