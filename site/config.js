@@ -1,8 +1,8 @@
 "use strict";
-/* Setup values. Empty until the owner registers a GitHub App and a CORS relay (see README in this folder). */
+/* Setup values. Empty until the owner registers the GitHub App (setup.html) and the relay is deployed (see site/README.md). */
 window.UNGGAH_CONFIG = {
   API: "https://api.github.com",
-  CLIENT_ID: "",   /* public client id of the owner's GitHub App (device flow enabled) */
-  RELAY: "",       /* https URL of a stateless relay for the two github.com device-flow endpoints */
+  CLIENT_ID: "",   /* public client id of the owner's GitHub App (web flow + PKCE) */
+  RELAY: "",       /* https URL of the stateless OAuth relay (server/ in this repo) */
   REAL_WRITES: false /* stays false until a real test repo is approved; loopback test servers are always allowed */
 };

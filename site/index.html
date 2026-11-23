@@ -11,7 +11,8 @@ button:disabled{opacity:.45;cursor:not-allowed}button.alt{background:var(--mut)}
 ul{padding-left:0;list-style:none;font:13px/1.6 ui-monospace,monospace;max-height:40vh;overflow:auto;word-break:break-all}.a{color:var(--ok)}.m{color:var(--ac)}.r{color:var(--bad)}#msg{font-weight:600}
 </style></head><body><main>
 <h1>Unggah web</h1>
-<p>Pick a ZIP, choose a repo and branch, and see exactly what would change. Files in the ZIP are added or updated; nothing in the repo is removed unless you tick the removal box. This is the browser version of the Unggah Android app, which pushes a ZIP over SSH. <strong>This page cannot change a repository yet:</strong> GitHub sign-in is not set up, so for now it only shows the comparison.</p>
+<p>Pick a ZIP, choose a repo and branch, and see exactly what would change. Files in the ZIP are added or updated; nothing in the repo is removed unless you tick the removal box. This is the browser version of the Unggah Android app, which pushes a ZIP over SSH.</p>
+<p><button id="signin" hidden>Sign in with GitHub</button><button id="signout" class="alt" hidden>Sign out</button></p>
 <p class="mut" id="state"></p>
 <div class="card"><label>Repository (owner/name)<input type="text" id="repo" placeholder="owner/name" autocomplete="off"></label>
 <label>Branch<input type="text" id="br" value="main" autocomplete="off"></label>
@@ -21,5 +22,5 @@ ul{padding-left:0;list-style:none;font:13px/1.6 ui-monospace,monospace;max-heigh
 <div class="card" id="res" hidden><div id="sum"></div><ul id="list"></ul>
 <label>Commit message<input type="text" id="msg" value="Update from Unggah web" autocomplete="off"></label>
 <label id="rmc" hidden><input type="checkbox" id="rmok"> I confirm the removals listed with "-"</label><br><button id="commit" disabled>Commit</button> <span id="cst" class="mut"></span></div>
-<p class="mut">Your ZIP is read in this browser; files go only to api.github.com when you commit. The page never asks for a password or a token. Sign-in uses GitHub's own device-code page. <a href="https://github.com/irvan-putra/unggah">Source</a> · <a href="https://github.com/irvan-putra/unggah/releases">Android app</a></p>
+<p class="mut">Your ZIP is read in this browser; when you commit, files go straight from this browser to api.github.com. The page never asks for a password or a token: sign-in happens on GitHub's own page, you choose which repos the Unggah app may access, and the sign-in lives only in this tab's memory (gone when you reload or it expires). <a href="https://github.com/irvan-putra/unggah">Source</a> · <a href="https://github.com/irvan-putra/unggah/releases">Android app</a></p>
 <script src="config.js"></script><script src="zip.js"></script><script src="git.js"></script><script src="app.js"></script></main></body></html>

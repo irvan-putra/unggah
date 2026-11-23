@@ -49,21 +49,41 @@ async function commitPlan(gh, cfg, owner, repo, branch, snapshot, p, message, on
   await gh.req("PATCH", `/repos/${owner}/${repo}/git/refs/heads/${encodeURIComponent(branch)}`, {sha: commit.sha, force: false});
   return commit.sha;
 }
-/* Device flow through the owner's relay. Unvalidated against real GitHub until an app and relay exist. */
-async function deviceStart(cfg) {
+/* GitHub App web sign-in (state + PKCE) through the owner's relay.
+   The token lives in a JS variable only: never localStorage, never a cookie,
+   gone on reload or when it expires. The relay strips the refresh token. */
+const OAUTH_KEY = "unggah-oauth";
+function b64url(bytes) { return b64(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+function randomString(len) {
+  const bytes = new Uint8Array(len); crypto.getRandomValues(bytes);
+  return b64url(bytes).slice(0, len);
+}
+async function signInStart(cfg, redirectUri) {
   if (!cfg.CLIENT_ID || !cfg.RELAY) throw new Error("Sign-in is not set up yet (needs a GitHub App client id and a relay).");
-  const r = await fetch(cfg.RELAY.replace(/\/$/, "") + "/device/code", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({client_id: cfg.CLIENT_ID})});
-  const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error_description || j.error || "device code request failed"); return j;
+  const verifier = randomString(64), state = randomString(32);
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+  sessionStorage.setItem(OAUTH_KEY, JSON.stringify({state, verifier, redirectUri, at: Date.now()}));
+  const q = new URLSearchParams({
+    client_id: cfg.CLIENT_ID, redirect_uri: redirectUri, state,
+    code_challenge: b64url(new Uint8Array(digest)), code_challenge_method: "S256",
+  });
+  return "https://github.com/login/oauth/authorize?" + q.toString();
 }
-async function devicePoll(cfg, dev) {
-  let wait = (dev.interval || 5) * 1000; const end = Date.now() + dev.expires_in * 1000;
-  while (Date.now() < end) {
-    await new Promise(r => setTimeout(r, wait));
-    const r = await fetch(cfg.RELAY.replace(/\/$/, "") + "/access_token", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({client_id: cfg.CLIENT_ID, device_code: dev.device_code, grant_type: "urn:ietf:params:oauth:grant-type:device_code"})});
-    const j = await r.json();
-    if (j.access_token) return j.access_token;
-    if (j.error === "slow_down") wait += 5000; else if (j.error && j.error !== "authorization_pending") throw new Error(j.error_description || j.error);
-  }
-  throw new Error("The sign-in code expired.");
+async function signInFinish(cfg, params) {
+  const code = params.get("code"), state = params.get("state");
+  if (!code || !state) return null; /* not a callback */
+  let stash = null;
+  try { stash = JSON.parse(sessionStorage.getItem(OAUTH_KEY) || "null"); } catch {}
+  sessionStorage.removeItem(OAUTH_KEY); /* single use, even on failure */
+  if (!stash || stash.state !== state || Date.now() - stash.at > 15 * 60 * 1000)
+    throw new Error("Sign-in state did not match or expired. Start sign-in again.");
+  const r = await fetch(cfg.RELAY.replace(/\/$/, "") + "/oauth/token", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({code, code_verifier: stash.verifier, redirect_uri: stash.redirectUri}),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.access_token) throw new Error(j.error_description || j.error || ("sign-in exchange failed (" + r.status + ")"));
+  if (j.token_type !== "bearer") throw new Error("unexpected token type from GitHub");
+  return {token: j.access_token, expiresIn: j.expires_in || null};
 }
-window.UnggahGit = {blobSha, GH, plan, commitPlan, deviceStart, devicePoll, isLoopback};
+window.UnggahGit = {blobSha, GH, plan, commitPlan, signInStart, signInFinish, isLoopback};

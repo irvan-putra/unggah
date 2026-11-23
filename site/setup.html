@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unggah: one-time GitHub App setup</title>
+<style>
+:root{color-scheme:light dark;--bg:#f4f5f8;--fg:#16181d;--card:#fff;--ac:#4b4fd6;--mut:#5b6170;--bd:#d6d9e2}
+@media(prefers-color-scheme:dark){:root{--bg:#121318;--fg:#e6e8ee;--card:#1b1d25;--ac:#9fa3ff;--mut:#9aa0b0;--bd:#2c2f3b}}
+body{margin:0;font:16px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg)}main{max-width:680px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:12px 0}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 13px;font:inherit;cursor:pointer;margin:4px 6px 0 0}@media(prefers-color-scheme:dark){button{color:#101226}}
+code,pre{font:14px/1.5 ui-monospace,monospace;word-break:break-all}pre{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px;user-select:all}.mut{color:var(--mut);font-size:.9em}.warn{border-color:#b3261e}
+</style></head><body><main>
+<h1>Unggah: one-time GitHub App setup</h1>
+<div class="card" id="step1">
+<p>This creates the <strong>Unggah web</strong> GitHub App on your account with exactly these settings:</p>
+<ul>
+<li>Permission: <strong>Contents: read &amp; write</strong> (nothing else)</li>
+<li>You pick which repos it can touch when you install it</li>
+<li>Callback: this site's page; webhook: off; public app</li>
+</ol>
+<p>The button opens GitHub's own page. You confirm the name there and click create.</p>
+<form id="mf" method="post" action="https://github.com/settings/apps/new">
+<input type="hidden" name="manifest" id="manifest"><input type="hidden" name="state" id="state">
+<button type="submit">Create the GitHub App on github.com</button></form>
+</div>
+<div class="card" id="step2" hidden>
+<p>App created. Two values come back:</p>
+<p><strong>1. Client ID</strong> (not secret; paste it in chat so the site config can be updated):</p>
+<pre id="cid"></pre>
+<p><strong>2. Client secret</strong> (SENSITIVE):</p>
+<pre id="csec"></pre>
+<div class="card warn"><p>The client secret goes <strong>only</strong> into the NEO portal as the app's environment variable
+<code>UNGGAH_GITHUB_CLIENT_SECRET</code>. Do not send it in chat, do not commit it, do not paste it anywhere else.
+This page does not keep it: reload and it is gone.</p></div>
+<p class="mut">The private key and webhook secret GitHub also generated are not shown and not needed; you can ignore them.</p>
+</div>
+<p class="mut" id="msg"></p>
+<p class="mut"><a href="./">Back to Unggah web</a> · <a href="https://github.com/irvan-putra/unggah">Source</a></p>
+<script>
+"use strict";
+const HERE = location.origin + location.pathname;
+const SITE = location.origin + location.pathname.replace(/setup\.html$/, "");
+const KEY = "unggah-app-manifest-state";
+function b64url(bytes){let s="";for(let i=0;i<bytes.length;i+=0x8000)s+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+const rand=n=>{const b=new Uint8Array(n);crypto.getRandomValues(b);return b64url(b).slice(0,n);};
+const qs=new URLSearchParams(location.search), msg=document.getElementById("msg");
+const manifest={
+  name:"Unggah web",
+  url:"https://vanipy.com/unggah/",
+  hook_attributes:{url:"https://vanipy.com/unggah/",active:false},
+  redirect_url:HERE,
+  callback_urls:[SITE],
+  description:"Update a GitHub repo from a ZIP, entirely in the browser.",
+  public:true,
+  default_events:[],
+  default_permissions:{contents:"write"},
+  request_oauth_on_install:true
+};
+(async()=>{
+  const code=qs.get("code"), state=qs.get("state");
+  if(!code){
+    const s=rand(24); sessionStorage.setItem(KEY,s);
+    document.getElementById("state").value=s;
+    document.getElementById("manifest").value=JSON.stringify(manifest);
+    return;
+  }
+  history.replaceState(null,"",location.pathname);
+  const expect=sessionStorage.getItem(KEY); sessionStorage.removeItem(KEY);
+  if(!expect||expect!==state){msg.textContent="State mismatch; the result was discarded. Start again from the button.";return;}
+  document.getElementById("step1").hidden=true;
+  try{
+    const r=await fetch("https://api.github.com/app-manifests/"+encodeURIComponent(code)+"/conversions",{method:"POST",headers:{Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"}});
+    const j=await r.json();
+    if(!r.ok||!j.client_id) throw new Error(j.message||("GitHub returned "+r.status));
+    document.getElementById("cid").textContent=j.client_id;
+    document.getElementById("csec").textContent=j.client_secret;
+    document.getElementById("step2").hidden=false;
+  }catch(err){msg.textContent="Could not finish app setup: "+err.message+". The code may have expired; start again.";}
+})();
+</script></main></body></html>

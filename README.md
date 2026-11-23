@@ -23,6 +23,10 @@ An Android (Kotlin) app that lets you push a ZIP file to a GitHub repo using rea
   - Home rocket animation
   - Push screen shows a big, slow, front overlay rocket while pushing
 
+## Unggah web
+
+The browser version lives in `site/` (https://vanipy.com/unggah/): same idea — pick a ZIP, see the exact diff against a branch, commit — but fully client-side, with GitHub App sign-in (web flow + PKCE, per-repo grants, token in tab memory only). The tiny sign-in relay is in `server/`. See `site/README.md` for the architecture and `server/README.md` for deployment.
+
 ## Run on your phone (Android Studio)
 
 1. Open this folder in **Android Studio**
