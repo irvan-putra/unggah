@@ -13,6 +13,8 @@ function authUi() {
   const canSignIn = cfg.REAL_WRITES && cfg.CLIENT_ID && cfg.RELAY;
   $("signin").hidden = !canSignIn || signedIn();
   $("signout").hidden = !signedIn() || loop;
+  $("signed1").hidden = !signedIn();
+  $("st1").className = signedIn() ? "done" : "";
   if (loop) $("state").textContent = "Test mode: talking to a local mock server, not GitHub.";
   else if (signedIn()) $("state").textContent = $("state").dataset.msg || "Signed in.";
   else if (canSignIn) $("state").textContent = "Sign in with GitHub to compare and commit. Compare also works signed out on public repos.";

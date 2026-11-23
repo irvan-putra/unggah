@@ -9,17 +9,21 @@ input[type=text]{font:inherit;width:100%;padding:8px;border-radius:8px;border:1p
 button,label.btn{display:inline-block;background:var(--ac);color:#fff;border:0;border-radius:8px;padding:9px 13px;font:inherit;cursor:pointer;margin:4px 6px 0 0}@media(prefers-color-scheme:dark){button,label.btn{color:#101226}}
 button:disabled{opacity:.45;cursor:not-allowed}button.alt{background:var(--mut)}input[type=file]{display:none}.mut{color:var(--mut);font-size:.9em}a{color:var(--ac)}
 ul{padding-left:0;list-style:none;font:13px/1.6 ui-monospace,monospace;max-height:40vh;overflow:auto;word-break:break-all}.a{color:var(--ok)}.m{color:var(--ac)}.r{color:var(--bad)}#msg{font-weight:600}
+ol.steps{margin:0;padding-left:20px}ol.steps li{margin:6px 0}ol.steps li.done{color:var(--ok)}
 </style></head><body><main>
 <h1>Unggah web</h1>
 <p>Pick a ZIP, choose a repo and branch, and see exactly what would change. Files in the ZIP are added or updated; nothing in the repo is removed unless you tick the removal box. This is the browser version of the Unggah Android app, which pushes a ZIP over SSH.</p>
-<p><button id="signin" hidden>Sign in with GitHub</button><button id="signout" class="alt" hidden>Sign out</button></p>
 <p class="mut" id="state"></p>
+<div class="card"><ol class="steps">
+<li id="st1"><button id="signin" hidden>Sign in with GitHub</button><span id="signed1" hidden>&#10003; Signed in</span> <button id="signout" class="alt" hidden>Sign out</button></li>
+<li id="st2"><a id="install" href="https://github.com/apps/unggah-web/installations/new">Grant the Unggah app your repo</a> on GitHub (choose <strong>Only select repositories</strong>; it asks for read &amp; write code, nothing else). Skip if you already granted it.</li>
+<li>Pick a ZIP below, compare, commit.</li>
+</ol></div>
 <div class="card"><label>Repository (owner/name)<input type="text" id="repo" placeholder="owner/name" autocomplete="off"></label>
 <label>Branch<input type="text" id="br" value="main" autocomplete="off"></label>
 <label class="btn">Choose ZIP<input type="file" id="zip" accept=".zip,application/zip,application/x-zip-compressed,application/octet-stream"></label><span id="zn" class="mut"></span>
 <p><label><input type="checkbox" id="del"> Also remove repo files that are not in the ZIP (off by default: removals are never done unless you tick this and confirm the list)</label></p>
-<button id="cmp" disabled>Compare with branch</button>
-<p class="mut">To commit, the repo must first be granted to the <a href="https://github.com/apps/unggah-web/installations/new">Unggah app on GitHub</a> (you pick which repos; read &amp; write code only).</p></div>
+<button id="cmp" disabled>Compare with branch</button></div>
 <div class="card" id="res" hidden><div id="sum"></div><ul id="list"></ul>
 <label>Commit message<input type="text" id="msg" value="Update from Unggah web" autocomplete="off"></label>
 <label id="rmc" hidden><input type="checkbox" id="rmok"> I confirm the removals listed with "-"</label><br><button id="commit" disabled>Commit</button> <span id="cst" class="mut"></span></div>
