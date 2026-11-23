@@ -15,9 +15,9 @@ ol.steps{margin:0;padding-left:20px}ol.steps li{margin:6px 0}ol.steps li.done{co
 <p>Pick a ZIP, choose a repo and branch, and see exactly what would change. Files in the ZIP are added or updated; nothing in the repo is removed unless you tick the removal box. This is the browser version of the Unggah Android app, which pushes a ZIP over SSH.</p>
 <p class="mut" id="state"></p>
 <div class="card"><ol class="steps">
-<li id="st1"><button id="signin" hidden>Sign in with GitHub</button><span id="signed1" hidden>&#10003; Signed in</span> <button id="signout" class="alt" hidden>Sign out</button></li>
-<li id="st2"><a id="install" href="https://github.com/apps/unggah-web/installations/new">Grant the Unggah app your repo</a> on GitHub (choose <strong>Only select repositories</strong>; it asks for read &amp; write code, nothing else). Skip if you already granted it.</li>
-<li>Pick a ZIP below, compare, commit.</li>
+<li id="st1"><span id="paused1" hidden>GitHub sign-in and commits are paused.</span><button id="signin" hidden>Sign in with GitHub</button><span id="signed1" hidden>&#10003; Signed in</span> <button id="signout" class="alt" hidden>Sign out</button></li>
+<li id="st2"><span id="paused2" hidden>No GitHub access is needed to compare a public repo.</span><span id="installstep"><a id="install" href="https://github.com/apps/unggah-web/installations/new">Grant the Unggah app your repo</a> on GitHub (choose <strong>Only select repositories</strong>; it asks for read &amp; write code, nothing else). Skip if you already granted it.</span></li>
+<li>Pick a ZIP below, compare<span id="commitstep">, commit</span><span id="previewstep" hidden>, review the changes. No files will be uploaded</span>.</li>
 </ol></div>
 <div class="card"><label>Repository (owner/name)<input type="text" id="repo" placeholder="owner/name" autocomplete="off"></label>
 <label>Branch<input type="text" id="br" value="main" autocomplete="off"></label>

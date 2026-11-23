@@ -11,6 +11,11 @@ const redirectUri = location.origin + location.pathname;
 function signedIn() { return !!token; }
 function authUi() {
   const canSignIn = cfg.REAL_WRITES && cfg.CLIENT_ID && cfg.RELAY;
+  $("paused1").hidden = !!canSignIn || loop;
+  $("paused2").hidden = !!canSignIn || loop;
+  $("installstep").hidden = !canSignIn && !loop;
+  $("commitstep").hidden = !canSignIn && !loop;
+  $("previewstep").hidden = !!canSignIn || loop;
   $("signin").hidden = !canSignIn || signedIn();
   $("signout").hidden = !signedIn() || loop;
   $("signed1").hidden = !signedIn();
@@ -18,7 +23,7 @@ function authUi() {
   if (loop) $("state").textContent = "Test mode: talking to a local mock server, not GitHub.";
   else if (signedIn()) $("state").textContent = $("state").dataset.msg || "Signed in.";
   else if (canSignIn) $("state").textContent = "Sign in with GitHub to compare and commit. Compare also works signed out on public repos.";
-  else $("state").textContent = "Compare works on public repos. Committing is switched off until the GitHub sign-in is set up, so this page cannot change any repo yet.";
+  else $("state").textContent = "Compare works on public repos. GitHub sign-in and commits are paused because the relay is stopped to avoid hosting charges. This page cannot change any repo.";
 }
 function expired() { return tokenExp && Date.now() > tokenExp; }
 async function afterSignIn(t, expiresIn) {
