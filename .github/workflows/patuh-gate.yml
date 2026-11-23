@@ -16,14 +16,14 @@ permissions:
 
 jobs:
   source-gate:
-    uses: irvan-putra/patuh/.github/workflows/release-gate.yml@45bf9b340bc27f6bcafbe909204d5a717c072ab1
+    uses: irvan-putra/patuh/.github/workflows/release-gate.yml@64e0911598c93a7970444a9431d5b3a29bd940a3
     with:
       app: unggah
       published: false
 
   verify-live-release:
     if: github.event_name == 'workflow_dispatch'
-    uses: irvan-putra/patuh/.github/workflows/release-gate.yml@45bf9b340bc27f6bcafbe909204d5a717c072ab1
+    uses: irvan-putra/patuh/.github/workflows/release-gate.yml@64e0911598c93a7970444a9431d5b3a29bd940a3
     with:
       app: unggah
       published: true
