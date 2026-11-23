@@ -16,7 +16,7 @@ ul{padding-left:0;list-style:none;font:13px/1.6 ui-monospace,monospace;max-heigh
 <p class="mut" id="state"></p>
 <div class="card"><label>Repository (owner/name)<input type="text" id="repo" placeholder="owner/name" autocomplete="off"></label>
 <label>Branch<input type="text" id="br" value="main" autocomplete="off"></label>
-<label class="btn">Choose ZIP<input type="file" id="zip" accept=".zip,application/zip"></label><span id="zn" class="mut"></span>
+<label class="btn">Choose ZIP<input type="file" id="zip" accept=".zip,application/zip,application/x-zip-compressed,application/octet-stream"></label><span id="zn" class="mut"></span>
 <p><label><input type="checkbox" id="del"> Also remove repo files that are not in the ZIP (off by default: removals are never done unless you tick this and confirm the list)</label></p>
 <button id="cmp" disabled>Compare with branch</button></div>
 <div class="card" id="res" hidden><div id="sum"></div><ul id="list"></ul>

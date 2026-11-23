@@ -159,6 +159,15 @@ await t("real writes stay blocked off-loopback when REAL_WRITES is false", async
   eq(msg.includes("switched off"), true, "blocked");
 });
 
+await t("picker accept covers Android MIME variants; content validation still rejects non-zips", async () => {
+  const html = readFileSync(join(here, "..", "site", "index.html"), "utf8");
+  for (const tok of [".zip", "application/zip", "application/x-zip-compressed", "application/octet-stream"])
+    eq(html.includes(tok), true, "accept token " + tok);
+  let msg = "";
+  try { await Z.readZip(new TextEncoder().encode("definitely not a zip").buffer); } catch (e) { msg = e.message; }
+  eq(msg.includes("not a zip"), true, "non-zip rejected by content check");
+});
+
 server.close();
 console.log(failures ? `\n${failures} FAILURES` : "\nAll site tests passed.");
 process.exit(failures ? 1 : 0);
