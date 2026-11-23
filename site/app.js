@@ -77,5 +77,13 @@ $("commit").onclick = async () => {
     const [owner, repo] = $("repo").value.trim().split("/"), branch = $("br").value.trim() || "main";
     gh.token = token; const sha = await G.commitPlan(gh, cfg, owner, repo, branch, snap, pl, $("msg").value || "Update from Unggah web", (d, t) => { $("cst").textContent = `Uploading ${d} of ${t}...`; });
     $("cst").textContent = "Committed " + sha.slice(0, 7) + ".";
-  } catch (err) { $("cst").textContent = "Not committed: " + (err.status === 401 ? "sign-in expired, please sign in again." : err.message); }
+  } catch (err) {
+    if (err.status === 403 && /not accessible by integration/i.test(err.message || "")) {
+      $("cst").textContent = "The Unggah app cannot write to this repo yet. ";
+      const a = document.createElement("a"); a.href = cfg.APP_INSTALL; a.textContent = "Open GitHub to grant it this repo";
+      a.target = "_blank"; a.rel = "noopener"; $("cst").append(a, ", then commit again (no need to sign in again).");
+    } else {
+      $("cst").textContent = "Not committed: " + (err.status === 401 ? "sign-in expired, please sign in again." : err.message);
+    }
+  }
 };

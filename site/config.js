@@ -4,5 +4,6 @@ window.UNGGAH_CONFIG = {
   API: "https://api.github.com",
   CLIENT_ID: "Iv23liyHXcr16ew3LsB8",   /* public client id of the owner's GitHub App (web flow + PKCE) */
   RELAY: "https://oad25td.app.neoapp.id",       /* https URL of the stateless OAuth relay (server/ in this repo) */
+  APP_INSTALL: "https://github.com/apps/unggah-web/installations/new", /* where users grant the app access to chosen repos */
   REAL_WRITES: true /* live since 2026-11-23 for the approved sapi test write; loopback test servers are always allowed */
 };
