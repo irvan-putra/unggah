@@ -2,7 +2,8 @@ name: sign test apk
 # Manual only. Tests, builds the debug variant and re-signs it with the dedicated unggah key. Uploads a workflow artifact only.
 # This repo has no unit tests; the gate job requires its CI run (build + identity check) to have passed on the same commit.
 # Active: dedicated signing key and certificate pin verified; four UNGGAH_SIGNING_* secrets are configured.
-# It never creates a release, tag or commit. A reviewed person attaches the APK to a release by hand.
+# This workflow only uploads a signed APK artifact; it does not create a release, tag or commit.
+# Publishing that artifact is a separate step; this workflow does not establish human review.
 on:
   workflow_dispatch:
     inputs:
