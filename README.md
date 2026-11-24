@@ -43,3 +43,7 @@ In Android Studio: **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
 1. In the app: **Generate SSH key** → **Copy public key**
 2. In GitHub: **Settings → SSH and GPG keys → New SSH key**
 3. Back in the app: fill owner/repo/branch and push
+
+---
+
+Built with AI assistance (Instinct and others). Not everything has been reviewed by Irvan.
