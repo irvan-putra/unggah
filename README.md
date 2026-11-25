@@ -46,4 +46,4 @@ In Android Studio: **Build → Build Bundle(s) / APK(s) → Build APK(s)**.
 
 ---
 
-Built with AI assistance (Instinct and others). Not everything has been reviewed by Irvan.
+Built with AI assistance (Instinct, trae.ai and others). Not everything has been reviewed by Irvan.
